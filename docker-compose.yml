@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel-app
+    container_name: laravel-app
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./projectCars:/var/www
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: laravel-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Houssam12345@
+      MYSQL_DATABASE: projectCarsTp
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  nginx:
+    image: nginx:alpine
+    container_name: laravel-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./projectCars:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+
+volumes:
+  dbdata:
